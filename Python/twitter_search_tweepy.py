@@ -1,7 +1,6 @@
 '''
-This file uses the tweepy library to stream all public tweets with the hashtag
-#halloween.. I probably should change it so the hashtag to search for can be
-entered by the user but I haven't done that yet.
+This file uses the tweepy library to stream all public tweets with a hashtag chosen by the user and sends
+each character to a port
 
 To run this code you need a 'cred.yml' file in a sibling directory named 'conf'
 This yml file needs four entries:
@@ -16,15 +15,37 @@ yaml format is super easy. Learn about it here: http://www.yaml.org/
 
 import tweepy
 import yaml
+import re
+import serial
+from time import sleep
 
 conf = yaml.load(open('conf/cred.yml'))
+myPort = serial.Serial('/dev/ttyUSB0', 115200, timeout = 10)
 
+hashtag = input("Input a hashtag to search for: ")
+if hashtag[0] !='#':
+    hashtag='#'+hashtag
+regex = re.compile('[^a-zA-Z]')
+sft = re.compile(hashtag)
+    
 #override the tweepy stream listener class 
 class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
-        #when you retrieve a status, print it out
-        print(status.text)
+        try:
+            #when you retrieve a status, print it out
+            print(status.author.screen_name+": " )
+            print(status.text)
+            print("TIMESTAMP: "+str(status.created_at)) 
+            no_hashtag = sft.sub('',  status.text)
+            text_only = regex.sub('', no_hashtag).encode('ascii', 'ignore')
+            for character in text_only:
+                print(character)
+		#myPort.write(character)
+                sleep(0.5)
+        except Exception as e:
+            print(e)
+            pass
 
     def on_error(self, status_code):
         if status_code == 420:
@@ -38,16 +59,15 @@ def main():
 
     api = tweepy.API(auth)
 
-    while(True):
-        try:
-            #stream tweets indefinitely
-            myStreamListener = MyStreamListener()
-            myStream = tweepy.Stream(auth = api.auth, listener=myStreamListener)
-            myStream.filter(track=['#halloween'])
-        except UnicodeEncodeError as e:
-            print("\n")
-            print(e)
-            print("\n")
+    #while(True):
+    try:
+        #stream tweets indefinitely
+        myStream = tweepy.Stream(auth = api.auth, listener=MyStreamListener())
+        myStream.filter(track=[hashtag])
+    except UnicodeEncodeError as e:
+        print("\n")
+        print(e)
+        print("\n")
    
 
 main()
