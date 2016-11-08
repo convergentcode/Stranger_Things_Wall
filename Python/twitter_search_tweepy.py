@@ -41,7 +41,7 @@ class MyStreamListener(tweepy.StreamListener):
             text_only = regex.sub('', no_hashtag).encode('ascii', 'ignore')
             for character in text_only:
                 print(character)
-        myPort.write(character)
+                myPort.write(character)
                 sleep(0.5)
         except Exception as e:
             print(e)
