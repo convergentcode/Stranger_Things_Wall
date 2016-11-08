@@ -1,10 +1,8 @@
-#!/usr/bin/pyt:hon
+#!/usr/bin/python
 from TwitterSearch import *
 import re
 import serial
 from time import sleep
-#from credentials import *
-import credentials
 
 regex = re.compile('[^a-zA-Z]')
 sft = re.compile('#cathings')
@@ -17,17 +15,18 @@ while True:
 	try:
 		print "Searching..."
 		tso = TwitterSearchOrder() # create a TwitterSearchOrder object
-		tso.set_keywords(['#cathings']) # let's define all words we would like to have a look for
+		tso.set_keywords(['cathings']) # let's define all words we would like to have a look for
 		tso.set_include_entities(False) # and don't give us all those entity information
-                consumer_key = credentials.login['consumer_key'] 
-                consumer_secret = credentials.login['consumer_secret']
-                access_token = credentials.login['access_token']
-                access_token_secret = credentials.login['access_token_secret'
-
+                print "created new tso"
 	    # it's about time to create a TwitterSearch object with our secret tokens
-		ts = TwitterSearch(consumer_key, consumer_secret, access_token, access_token_secret)
+		ts = TwitterSearch(
+			consumer_key = 'noZHhWkYhVFPaHbG4RYhZ73Wi',
+			consumer_secret = 'JBF7GBL4h2ZHdNbp2FUaUH7Er4NUGT7hKc05YLrnQGl7xadlCR',
+			access_token = '42788927-DfqVTMWlrDI6sgmiYNQdSEvXE0QTOUXJXTljxUYio',
+			access_token_secret = 'Ei984rP5T7yIQ4BmJRkqCQZetI17PTKIz8FBT5VtYrEdv'
+                 )    
                 print "duh"
-
+                print ts
 	     # this is where the fun actually starts :)
 		for tweet in ts.search_tweets_iterable(tso):
 			if tweet['id'] not in tweet_id_list:

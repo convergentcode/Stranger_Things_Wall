@@ -20,7 +20,7 @@ import serial
 from time import sleep
 
 conf = yaml.load(open('conf/cred.yml'))
-myPort = serial.Serial('/dev/ttyUSB0', 115200, timeout = 10)
+myPort = serial.Serial('/dev/ttyACM0', 115200, timeout = 10)
 
 hashtag = input("Input a hashtag to search for: ")
 if hashtag[0] !='#':
