@@ -36,12 +36,16 @@ class MyStreamListener(tweepy.StreamListener):
             #when you retrieve a status, print it out
             print(status.author.screen_name+": " )
             print(status.text)
+            mystring = (status.text)
+            b = mystring.encode('utf-8')
+            myPort.write(b)
             print("TIMESTAMP: "+str(status.created_at)) 
             no_hashtag = sft.sub('',  status.text)
             text_only = regex.sub('', no_hashtag).encode('ascii', 'ignore')
             for character in text_only:
                 print(character)
-                myPort.write(character)
+                print("derp.")
+                #myPort.write(character)
                 sleep(0.5)
         except Exception as e:
             print(e)
